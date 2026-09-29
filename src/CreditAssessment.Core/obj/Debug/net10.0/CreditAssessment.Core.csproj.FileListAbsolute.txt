@@ -1,0 +1,11 @@
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/bin/Debug/net10.0/CreditAssessment.Core.deps.json
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/bin/Debug/net10.0/CreditAssessment.Core.dll
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/bin/Debug/net10.0/CreditAssessment.Core.pdb
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/CreditAssessment.Core.GeneratedMSBuildEditorConfig.editorconfig
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/CreditAssessment.Core.AssemblyInfoInputs.cache
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/CreditAssessment.Core.AssemblyInfo.cs
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/CreditAssessment.Core.csproj.CoreCompileInputs.cache
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/CreditAssessment.Core.dll
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/refint/CreditAssessment.Core.dll
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/CreditAssessment.Core.pdb
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/ref/CreditAssessment.Core.dll
