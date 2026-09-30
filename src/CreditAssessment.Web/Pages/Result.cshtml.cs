@@ -23,6 +23,13 @@ public class ResultModel : PageModel
         var repository = new CreditRequestRepository();
         Assessment = await repository.GetAsync(id);
 
-        return Assessment is null ? NotFound() : Page();
+        if (Assessment is null)
+            return NotFound();
+
+        History = await repository.GetHistoryAsync(id);
+        return Page();
     }
+
+    public IReadOnlyList<StatusHistoryEntry> History { get; private set; } =
+    Array.Empty<StatusHistoryEntry>();
 }

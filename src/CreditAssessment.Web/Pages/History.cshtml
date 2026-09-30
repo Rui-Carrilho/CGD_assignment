@@ -1,0 +1,39 @@
+@page
+@model CreditAssessment.Web.Pages.HistoryModel
+
+<h1>Pedidos recentes</h1>
+
+@if (Model.Requests.Count == 0)
+{
+    <p>Ainda não existem pedidos.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Data (UTC)</th>
+                <th>NIF</th>
+                <th>Estado atual</th>
+                <th>Pedido</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var request in Model.Requests)
+        {
+            <tr>
+                <td>@request.SubmittedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@(request.Nif ?? "—")</td>
+                <td>@DecisionDisplay.Label(request.CurrentDecision)</td>
+                <td>
+                    <a asp-page="/Result" asp-route-id="@request.Id">
+                        Ver resultado
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<p><a asp-page="/Index">Novo pedido</a></p>

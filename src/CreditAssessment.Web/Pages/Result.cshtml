@@ -57,4 +57,19 @@ else
     </ul>
 }
 
+<h2>Histórico de estados</h2>
+
+<ol>
+@foreach (var entry in Model.History)
+{
+    <li>
+        @entry.ChangedAt.ToString("yyyy-MM-dd HH:mm") UTC —
+        @DecisionDisplay.Label(entry.NewDecision)
+        (@entry.Actor: @entry.Justification)
+    </li>
+}
+</ol>
+
+<p><a asp-page="/History">Ver pedidos recentes</a></p>
+
 <p><a asp-page="/Index">Avaliar outro pedido</a></p>

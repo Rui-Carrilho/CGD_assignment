@@ -272,4 +272,82 @@ public sealed class CreditRequestRepository
         return new StoredAssessment(
             id, input, evaluation, currentDecision, submittedAt);
     }
+
+    public async Task<IReadOnlyList<RequestSummary>> ListRecentAsync(
+        int take = 50)
+    {
+        if (take < 1 || take > 100)
+            throw new ArgumentOutOfRangeException(nameof(take));
+
+        await using SqlConnection connection =
+            await SqlServerConnectionFactory.OpenAsync();
+
+        await using SqlCommand command = new(
+            """
+            SELECT TOP (@Take)
+                Id, Nif, CurrentDecision, SubmittedAt
+            FROM dbo.CreditRequest
+            ORDER BY SubmittedAt DESC, Id DESC;
+            """,
+            connection);
+
+        command.Parameters.Add("@Take", SqlDbType.Int).Value = take;
+
+        await using SqlDataReader reader =
+            await command.ExecuteReaderAsync();
+
+        var requests = new List<RequestSummary>();
+
+        while (await reader.ReadAsync())
+        {
+            requests.Add(new RequestSummary(
+                reader.GetGuid(0),
+                reader.IsDBNull(1) ? null : reader.GetString(1),
+                (Decision)reader.GetByte(2),
+                reader.GetDateTimeOffset(3)));
+        }
+
+        return requests;
+    }
+
+    public async Task<IReadOnlyList<StatusHistoryEntry>> GetHistoryAsync(
+        Guid requestId)
+    {
+        await using SqlConnection connection =
+            await SqlServerConnectionFactory.OpenAsync();
+
+        await using SqlCommand command = new(
+            """
+            SELECT
+                Id, PreviousDecision, NewDecision,
+                ChangedAt, Actor, Justification
+            FROM dbo.StatusHistory
+            WHERE RequestId = @RequestId
+            ORDER BY Id;
+            """,
+            connection);
+
+        command.Parameters.Add(
+            "@RequestId", SqlDbType.UniqueIdentifier).Value = requestId;
+
+        await using SqlDataReader reader =
+            await command.ExecuteReaderAsync();
+
+        var entries = new List<StatusHistoryEntry>();
+
+        while (await reader.ReadAsync())
+        {
+            entries.Add(new StatusHistoryEntry(
+                reader.GetInt64(0),
+                reader.IsDBNull(1)
+                    ? null
+                    : (Decision)reader.GetByte(1),
+                (Decision)reader.GetByte(2),
+                reader.GetDateTimeOffset(3),
+                reader.GetString(4),
+                reader.GetString(5)));
+        }
+
+        return entries;
+    }
 }
