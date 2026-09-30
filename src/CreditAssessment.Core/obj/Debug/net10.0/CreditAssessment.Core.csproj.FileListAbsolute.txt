@@ -9,3 +9,4 @@
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/refint/CreditAssessment.Core.dll
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/CreditAssessment.Core.pdb
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/ref/CreditAssessment.Core.dll
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Core/obj/Debug/net10.0/CreditAssessment.Core.sourcelink.json

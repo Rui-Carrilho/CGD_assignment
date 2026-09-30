@@ -97,3 +97,4 @@
 /home/sirlordboss/Documents/CGD_assignment/tests/CreditAssessment.Tests/obj/Debug/net10.0/CreditAssessment.Tests.pdb
 /home/sirlordboss/Documents/CGD_assignment/tests/CreditAssessment.Tests/obj/Debug/net10.0/CreditAssessment.Tests.genruntimeconfig.cache
 /home/sirlordboss/Documents/CGD_assignment/tests/CreditAssessment.Tests/obj/Debug/net10.0/ref/CreditAssessment.Tests.dll
+/home/sirlordboss/Documents/CGD_assignment/tests/CreditAssessment.Tests/obj/Debug/net10.0/CreditAssessment.Tests.sourcelink.json
