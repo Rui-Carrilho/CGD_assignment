@@ -1,0 +1,60 @@
+@page "{id:guid}"
+@model CreditAssessment.Web.Pages.ResultModel
+@using System.Globalization
+
+@{
+    var assessment = Model.Assessment!;
+    var indicators = assessment.Evaluation.Indicators;
+}
+
+<h1>Resultado do pedido</h1>
+
+<p><strong>Pedido:</strong> @assessment.Id</p>
+<p><strong>Decisão atual:</strong> @Model.DecisionLabel</p>
+<p><strong>Versão das regras:</strong> @assessment.Evaluation.RulesVersion</p>
+
+<h2>Motivos</h2>
+
+@if (assessment.Evaluation.Findings.Count == 0)
+{
+    <p>Nenhum motivo de restrição.</p>
+}
+else
+{
+    <ul>
+    @foreach (var finding in assessment.Evaluation.Findings)
+    {
+        <li>@finding.Message</li>
+    }
+    </ul>
+}
+
+<h2>Indicadores</h2>
+
+@if (indicators is null)
+{
+    <p>Não calculados porque o pedido é inválido.</p>
+}
+else
+{
+    <ul>
+        <li>
+            Prestação estimada:
+            @(indicators.EstimatedInstalment.ToString("F2", CultureInfo.InvariantCulture)) €
+        </li>
+        <li>
+            Taxa de esforço:
+            @(indicators.EffortRate.ToString("F2", CultureInfo.InvariantCulture))%
+        </li>
+        <li>
+            Idade no final do contrato:
+            @(indicators.AgeAtMaturity.ToString("F2", CultureInfo.InvariantCulture))
+        </li>
+        <li>
+            Limite recomendado:
+            @(indicators.RecommendedAmountLimit.ToString("F2", CultureInfo.InvariantCulture)) €
+        </li>
+    </ul>
+}
+
+<p><a asp-page="/Index">Avaliar outro pedido</a></p>

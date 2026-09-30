@@ -23,38 +23,218 @@ public sealed class CreditRequestRepository
         await using SqlConnection connection =
             await SqlServerConnectionFactory.OpenAsync();
 
-        await using SqlCommand command = new(
+        await using SqlTransaction transaction =
+            (SqlTransaction)await connection.BeginTransactionAsync();
+
+        await using (SqlCommand requestCommand = new(
             """
             INSERT INTO dbo.CreditRequest
                 (Id, Nif, InputJson, EvaluationJson,
-                 CurrentDecision, SubmittedAt)
+                CurrentDecision, SubmittedAt)
             VALUES
                 (@Id, @Nif, @InputJson, @EvaluationJson,
-                 @CurrentDecision, @SubmittedAt);
+                @CurrentDecision, @SubmittedAt);
             """,
-            connection);
+            connection,
+            transaction))
+        {
+            requestCommand.Parameters.Add(
+                "@Id", SqlDbType.UniqueIdentifier).Value = id;
 
-        command.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Value = id;
+            requestCommand.Parameters.Add(
+                "@Nif", SqlDbType.NVarChar, 9).Value =
+                CreditEvaluator.IsValidNif(input.Nif)
+                    ? input.Nif!
+                    : DBNull.Value;
 
-        command.Parameters.Add("@Nif", SqlDbType.NVarChar, 9).Value =
-            CreditEvaluator.IsValidNif(input.Nif)
-                ? input.Nif!
-                : DBNull.Value;
+            requestCommand.Parameters.Add(
+                "@InputJson", SqlDbType.NVarChar, -1).Value =
+                inputJson;
 
-        command.Parameters.Add("@InputJson", SqlDbType.NVarChar, -1).Value =
-            inputJson;
+            requestCommand.Parameters.Add(
+                "@EvaluationJson", SqlDbType.NVarChar, -1).Value =
+                evaluationJson;
 
-        command.Parameters.Add("@EvaluationJson", SqlDbType.NVarChar, -1).Value =
-            evaluationJson;
+            requestCommand.Parameters.Add(
+                "@CurrentDecision", SqlDbType.TinyInt).Value =
+                (byte)evaluation.Decision;
 
-        command.Parameters.Add("@CurrentDecision", SqlDbType.TinyInt).Value =
-            (byte)evaluation.Decision;
+            requestCommand.Parameters.Add(
+                "@SubmittedAt", SqlDbType.DateTimeOffset).Value =
+                submittedAt;
 
-        command.Parameters.Add("@SubmittedAt", SqlDbType.DateTimeOffset).Value =
-            submittedAt;
+            await requestCommand.ExecuteNonQueryAsync();
+        }
 
-        await command.ExecuteNonQueryAsync();
+        for (int index = 0; index < evaluation.Findings.Count; index++)
+        {
+            Finding finding = evaluation.Findings[index];
+
+            await using SqlCommand reasonCommand = new(
+                """
+                INSERT INTO dbo.EvaluationReason
+                    (RequestId, SequenceNumber, Code, Severity, Message)
+                VALUES
+                    (@RequestId, @SequenceNumber, @Code,
+                    @Severity, @Message);
+                """,
+                connection,
+                transaction);
+
+            reasonCommand.Parameters.Add(
+                "@RequestId", SqlDbType.UniqueIdentifier).Value = id;
+
+            reasonCommand.Parameters.Add(
+                "@SequenceNumber", SqlDbType.Int).Value = index;
+
+            reasonCommand.Parameters.Add(
+                "@Code", SqlDbType.NVarChar, 100).Value = finding.Code;
+
+            reasonCommand.Parameters.Add(
+                "@Severity", SqlDbType.TinyInt).Value =
+                (byte)finding.Severity;
+
+            reasonCommand.Parameters.Add(
+                "@Message", SqlDbType.NVarChar, 1000).Value =
+                finding.Message;
+
+            await reasonCommand.ExecuteNonQueryAsync();
+        }
+
+        await using (SqlCommand historyCommand = new(
+            """
+            INSERT INTO dbo.StatusHistory
+                (RequestId, PreviousDecision, NewDecision,
+                ChangedAt, Actor, Justification)
+            VALUES
+                (@RequestId, NULL, @NewDecision,
+                @ChangedAt, @Actor, @Justification);
+            """,
+            connection,
+            transaction))
+        {
+            historyCommand.Parameters.Add(
+                "@RequestId", SqlDbType.UniqueIdentifier).Value = id;
+
+            historyCommand.Parameters.Add(
+                "@NewDecision", SqlDbType.TinyInt).Value =
+                (byte)evaluation.Decision;
+
+            historyCommand.Parameters.Add(
+                "@ChangedAt", SqlDbType.DateTimeOffset).Value =
+                submittedAt;
+
+            historyCommand.Parameters.Add(
+                "@Actor", SqlDbType.NVarChar, 100).Value =
+                "System";
+
+            historyCommand.Parameters.Add(
+                "@Justification", SqlDbType.NVarChar, 500).Value =
+                "Automatic evaluation";
+
+            await historyCommand.ExecuteNonQueryAsync();
+        }
+
+        await transaction.CommitAsync();
         return id;
+    }
+
+    public async Task ApproveAfterManualReviewAsync(
+        Guid id,
+        string actor,
+        string justification)
+    {
+        if (id == Guid.Empty)
+            throw new ArgumentException("A request ID is required.", nameof(id));
+
+        if (string.IsNullOrWhiteSpace(actor) || actor.Length > 100)
+            throw new ArgumentException(
+                "An actor of at most 100 characters is required.",
+                nameof(actor));
+
+        if (string.IsNullOrWhiteSpace(justification) ||
+            justification.Length > 500)
+            throw new ArgumentException(
+                "A justification of at most 500 characters is required.",
+                nameof(justification));
+
+        await using SqlConnection connection =
+            await SqlServerConnectionFactory.OpenAsync();
+
+        await using SqlTransaction transaction =
+            (SqlTransaction)await connection.BeginTransactionAsync();
+
+        await using (SqlCommand updateCommand = new(
+            """
+            UPDATE dbo.CreditRequest
+            SET CurrentDecision = @Approved
+            WHERE Id = @Id
+            AND CurrentDecision = @ManualReview;
+            """,
+            connection,
+            transaction))
+        {
+            updateCommand.Parameters.Add(
+                "@Id", SqlDbType.UniqueIdentifier).Value = id;
+
+            updateCommand.Parameters.Add(
+                "@Approved", SqlDbType.TinyInt).Value =
+                (byte)Decision.Approved;
+
+            updateCommand.Parameters.Add(
+                "@ManualReview", SqlDbType.TinyInt).Value =
+                (byte)Decision.ManualReview;
+
+            int changedRows = await updateCommand.ExecuteNonQueryAsync();
+
+            if (changedRows != 1)
+            {
+                await transaction.RollbackAsync();
+
+                throw new InvalidOperationException(
+                    "The request does not exist or is not awaiting manual review.");
+            }
+        }
+
+        await using (SqlCommand historyCommand = new(
+            """
+            INSERT INTO dbo.StatusHistory
+                (RequestId, PreviousDecision, NewDecision,
+                ChangedAt, Actor, Justification)
+            VALUES
+                (@RequestId, @PreviousDecision, @NewDecision,
+                @ChangedAt, @Actor, @Justification);
+            """,
+            connection,
+            transaction))
+        {
+            historyCommand.Parameters.Add(
+                "@RequestId", SqlDbType.UniqueIdentifier).Value = id;
+
+            historyCommand.Parameters.Add(
+                "@PreviousDecision", SqlDbType.TinyInt).Value =
+                (byte)Decision.ManualReview;
+
+            historyCommand.Parameters.Add(
+                "@NewDecision", SqlDbType.TinyInt).Value =
+                (byte)Decision.Approved;
+
+            historyCommand.Parameters.Add(
+                "@ChangedAt", SqlDbType.DateTimeOffset).Value =
+                DateTimeOffset.UtcNow;
+
+            historyCommand.Parameters.Add(
+                "@Actor", SqlDbType.NVarChar, 100).Value =
+                actor.Trim();
+
+            historyCommand.Parameters.Add(
+                "@Justification", SqlDbType.NVarChar, 500).Value =
+                justification.Trim();
+
+            await historyCommand.ExecuteNonQueryAsync();
+        }
+
+        await transaction.CommitAsync();
     }
 
     public async Task<StoredAssessment?> GetAsync(Guid id)

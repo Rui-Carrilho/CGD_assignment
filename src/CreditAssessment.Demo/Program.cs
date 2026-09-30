@@ -31,7 +31,7 @@ foreach (var scenario in Scenarios.All)
 
 var repository = new CreditRequestRepository();
 
-RequestInput sampleInput = Scenarios.All["A"];
+RequestInput sampleInput = Scenarios.All["B"];
 Evaluation sampleEvaluation = evaluator.Evaluate(sampleInput);
 
 Guid savedId = await repository.SaveAsync(
@@ -43,3 +43,16 @@ StoredAssessment? saved = await repository.GetAsync(savedId);
 Console.WriteLine($"Saved request: {savedId}");
 Console.WriteLine($"Loaded NIF: {saved?.Input.Nif}");
 Console.WriteLine($"Loaded decision: {saved?.CurrentDecision}");
+
+await repository.ApproveAfterManualReviewAsync(
+    savedId,
+    "demo-analyst",
+    "Manual review completed for this demonstration.");
+
+StoredAssessment? updated = await repository.GetAsync(savedId);
+
+Console.WriteLine(
+    $"Original automated decision: {updated?.Evaluation.Decision}");
+
+Console.WriteLine(
+    $"Current decision after review: {updated?.CurrentDecision}");

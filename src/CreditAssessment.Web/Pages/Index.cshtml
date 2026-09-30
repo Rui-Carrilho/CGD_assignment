@@ -1,0 +1,61 @@
+﻿@page
+@model CreditAssessment.Web.Pages.IndexModel
+
+<h1>Novo pedido de crédito</h1>
+
+<p>Introduza os dados para obter uma pré-análise.</p>
+
+<form method="post" asp-page="/Index">
+    <div>
+        <label asp-for="Nif">NIF</label>
+        <input asp-for="Nif" inputmode="numeric" />
+    </div>
+
+    <div>
+        <label asp-for="Age">Idade</label>
+        <input asp-for="Age" inputmode="numeric" />
+    </div>
+
+    <div>
+        <label asp-for="MonthlyIncome">Rendimento mensal líquido (€)</label>
+        <input asp-for="MonthlyIncome" inputmode="decimal" />
+    </div>
+
+    <div>
+        <label asp-for="ExistingInstalments">Prestações atuais (€)</label>
+        <input asp-for="ExistingInstalments" inputmode="decimal" />
+    </div>
+
+    <div>
+        <label asp-for="RequestedAmount">Valor pretendido (€)</label>
+        <input asp-for="RequestedAmount" inputmode="decimal" />
+    </div>
+
+    <div>
+        <label asp-for="TermMonths">Prazo (meses)</label>
+        <input asp-for="TermMonths" inputmode="numeric" />
+    </div>
+
+    <div>
+        <label asp-for="Employment">Situação profissional</label>
+        <select asp-for="Employment">
+            <option value="">Selecione</option>
+            <option value="Efetivo">Efetivo</option>
+            <option value="ContratoPrazo">Contrato a prazo</option>
+            <option value="Desempregado">Desempregado</option>
+        </select>
+    </div>
+
+    <div>
+        <label asp-for="CreditIncidents">Incidentes de crédito</label>
+        <select asp-for="CreditIncidents">
+            <option value="">Selecione</option>
+            <option value="Não">Não</option>
+            <option value="Sim">Sim</option>
+        </select>
+    </div>
+
+    <p>Para valores decimais, pode usar ponto: <code>2500.50</code>.</p>
+
+    <button type="submit">Avaliar pedido</button>
+</form>
