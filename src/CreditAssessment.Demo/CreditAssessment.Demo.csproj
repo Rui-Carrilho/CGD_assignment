@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CreditAssessment.Core\CreditAssessment.Core.csproj" />
+    <ProjectReference Include="..\CreditAssessment.Data\CreditAssessment.Data.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
