@@ -57,10 +57,11 @@
 <div class="result-grid section-space">
     <section class="panel">
         <p class="eyebrow">Recusas</p>
-        <h2>Motivo mais frequente</h2>
+        <h2>Motivo automático mais frequente</h2>
         <p class="section-intro">
-            Conta cada motivo de severidade “Recusado” nos pedidos
-            atualmente recusados. Empates são apresentados em conjunto.
+            Conta os motivos automáticos de recusa nos pedidos atualmente
+            recusados. As recusas decididas por um analista mantêm a respetiva
+            fundamentação no histórico individual do pedido.
         </p>
 
         @if (report.TopRefusalReasons.Count == 0)

@@ -133,4 +133,4 @@
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/CreditAssessment.Web.pdb
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/CreditAssessment.Web.genruntimeconfig.cache
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/ref/CreditAssessment.Web.dll
-/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/compressed/086v6dvri7-{0}-z42vknyy97-z42vknyy97.gz
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/compressed/086v6dvri7-{0}-z8hwzbnmi3-z8hwzbnmi3.gz

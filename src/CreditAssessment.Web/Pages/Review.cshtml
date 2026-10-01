@@ -16,56 +16,184 @@
     </p>
 </div>
 
-<div class="result-grid">
+<div class="review-layout">
     <section class="panel">
-        <p class="eyebrow">Pedido @assessment.Id</p>
-        <h2>Dados e motivos</h2>
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Informação para decisão</p>
+                <h2>Pedido em análise</h2>
+                <p>
+                    Confirme os dados, cálculos e motivos antes de tomar
+                    uma decisão.
+                </p>
+            </div>
+        </div>
 
-        <dl class="detail-grid">
+        <dl class="review-meta">
             <div>
-                <dt>NIF</dt>
-                <dd>@(assessment.Input.Nif ?? "—")</dd>
+                <dt>Referência</dt>
+                <dd><code>@assessment.Id</code></dd>
             </div>
             <div>
-                <dt>Rendimento mensal</dt>
-                <dd>@(assessment.Input.MonthlyIncome ?? "—") €</dd>
+                <dt>Submetido em</dt>
+                <dd>
+                    @assessment.SubmittedAt.ToString("yyyy-MM-dd HH:mm") UTC
+                </dd>
             </div>
             <div>
-                <dt>Montante</dt>
-                <dd>@(assessment.Input.RequestedAmount ?? "—") €</dd>
+                <dt>Decisão automática</dt>
+                <dd>
+                    <span class="status-pill status-manualreview">
+                        @DecisionDisplay.Label(
+                            assessment.Evaluation.Decision)
+                    </span>
+                </dd>
             </div>
             <div>
-                <dt>Prazo</dt>
-                <dd>@(assessment.Input.TermMonths ?? "—") meses</dd>
+                <dt>Versão das regras</dt>
+                <dd>@assessment.Evaluation.RulesVersion</dd>
             </div>
         </dl>
 
-        <ul class="reason-list">
-        @foreach (var finding in assessment.Evaluation.Findings)
-        {
-            <li>
-                <strong>@finding.Message</strong>
-                <code>@finding.Code</code>
-            </li>
-        }
-        </ul>
+        <div class="review-subsection">
+            <h3>Cliente</h3>
 
-        @if (indicators is not null)
-        {
-            <p class="field-note">
-                Prestação estimada:
-                @(indicators.EstimatedInstalment.ToString("F2", CultureInfo.InvariantCulture)) € ·
-                Taxa de esforço:
-                @(indicators.EffortRate.ToString("F2", CultureInfo.InvariantCulture))%
-            </p>
-        }
+            <dl class="review-detail-grid">
+                <div>
+                    <dt>NIF</dt>
+                    <dd>@(assessment.Input.Nif ?? "—")</dd>
+                </div>
+                <div>
+                    <dt>Idade</dt>
+                    <dd>@(assessment.Input.Age ?? "—") anos</dd>
+                </div>
+                <div>
+                    <dt>Situação profissional</dt>
+                    <dd>@(assessment.Input.Employment ?? "—")</dd>
+                </div>
+                <div>
+                    <dt>Incidentes de crédito</dt>
+                    <dd>@(assessment.Input.CreditIncidents ?? "—")</dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="review-subsection">
+            <h3>Condições financeiras</h3>
+
+            <dl class="review-detail-grid">
+                <div>
+                    <dt>Rendimento mensal líquido</dt>
+                    <dd>
+                        @(assessment.Input.MonthlyIncome ?? "—") €
+                    </dd>
+                </div>
+                <div>
+                    <dt>Prestações atuais</dt>
+                    <dd>
+                        @(assessment.Input.ExistingInstalments ?? "—") €
+                    </dd>
+                </div>
+                <div>
+                    <dt>Valor pretendido</dt>
+                    <dd>
+                        @(assessment.Input.RequestedAmount ?? "—") €
+                    </dd>
+                </div>
+                <div>
+                    <dt>Prazo</dt>
+                    <dd>
+                        @(assessment.Input.TermMonths ?? "—") meses
+                    </dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="review-subsection">
+            <h3>Indicadores calculados</h3>
+
+            @if (indicators is null)
+            {
+                <p class="empty-note">
+                    Não existem indicadores calculados para este pedido.
+                </p>
+            }
+            else
+            {
+                <dl class="metric-list">
+                    <div>
+                        <dt>Prestação mensal estimada</dt>
+                        <dd>
+                            @(indicators.EstimatedInstalment.ToString(
+                                "F2",
+                                CultureInfo.InvariantCulture)) €
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Taxa de esforço</dt>
+                        <dd>
+                            @(indicators.EffortRate.ToString(
+                                "F2",
+                                CultureInfo.InvariantCulture))%
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Idade no final do contrato</dt>
+                        <dd>
+                            @(indicators.AgeAtMaturity.ToString(
+                                "F2",
+                                CultureInfo.InvariantCulture)) anos
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Limite recomendado</dt>
+                        <dd>
+                            @(indicators.RecommendedAmountLimit.ToString(
+                                "F2",
+                                CultureInfo.InvariantCulture)) €
+                        </dd>
+                    </div>
+                </dl>
+            }
+        </div>
+
+        <div class="review-subsection">
+            <h3>Motivos para análise manual</h3>
+
+            @if (assessment.Evaluation.Findings.Count == 0)
+            {
+                <p class="empty-note">
+                    Não foram registados motivos.
+                </p>
+            }
+            else
+            {
+                <ul class="reason-list">
+                @foreach (var finding in assessment.Evaluation.Findings)
+                {
+                    <li>
+                        <span class="status-pill
+                                    status-@finding.Severity
+                                        .ToString()
+                                        .ToLowerInvariant()">
+                            @DecisionDisplay.Label(finding.Severity)
+                        </span>
+
+                        <strong>@finding.Message</strong>
+                        <code>@finding.Code</code>
+                    </li>
+                }
+                </ul>
+            }
+        </div>
     </section>
 
-    <section class="panel">
+    <section class="panel review-decision-panel">
         <p class="eyebrow">Decisão humana</p>
-        <h2>Registar aprovação</h2>
+        <h2>Registar decisão</h2>
         <p class="section-intro">
-            O nome e a fundamentação ficarão no histórico do pedido.
+            Aprove ou recuse o pedido após a análise. O nome do analista
+            e a fundamentação ficarão registados no histórico.
         </p>
 
         <form method="post" asp-page="/Review"
@@ -82,9 +210,7 @@
             </div>
 
             <div class="field review-field">
-                <label asp-for="Justification">
-                    Fundamentação da aprovação
-                </label>
+                <label asp-for="Justification">Fundamentação da decisão</label>
                 <textarea asp-for="Justification"
                           class="control review-textarea"
                           maxlength="500"></textarea>
@@ -92,13 +218,22 @@
                       class="field-error"></span>
             </div>
 
-            <div class="page-actions">
-                <button type="submit" class="button button-primary">
-                    Registar aprovação
+            <div class="review-actions">
+                <button type="submit"
+                        asp-page-handler="Approve"
+                        class="button button-approved">
+                    Aprovar pedido
                 </button>
+
+                <button type="submit"
+                        asp-page-handler="Refuse"
+                        class="button button-refused">
+                    Recusar pedido
+                </button>
+
                 <a asp-page="/Result"
-                   asp-route-id="@assessment.Id"
-                   class="button button-secondary">
+                asp-route-id="@assessment.Id"
+                class="button button-secondary">
                     Cancelar
                 </a>
             </div>

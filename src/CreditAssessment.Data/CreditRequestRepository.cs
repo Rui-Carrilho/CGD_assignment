@@ -139,24 +139,39 @@ public sealed class CreditRequestRepository
         return id;
     }
 
-    public async Task ApproveAfterManualReviewAsync(
+    public async Task ResolveManualReviewAsync(
         Guid id,
+        Decision newDecision,
         string actor,
         string justification)
     {
         if (id == Guid.Empty)
-            throw new ArgumentException("A request ID is required.", nameof(id));
+            throw new ArgumentException(
+                "A request ID is required.",
+                nameof(id));
+
+        if (newDecision is not
+            (Decision.Approved or Decision.Refused))
+        {
+            throw new ArgumentException(
+                "A manual review may only be approved or refused.",
+                nameof(newDecision));
+        }
 
         if (string.IsNullOrWhiteSpace(actor) || actor.Length > 100)
+        {
             throw new ArgumentException(
                 "An actor of at most 100 characters is required.",
                 nameof(actor));
+        }
 
         if (string.IsNullOrWhiteSpace(justification) ||
             justification.Length > 500)
+        {
             throw new ArgumentException(
                 "A justification of at most 500 characters is required.",
                 nameof(justification));
+        }
 
         await using SqlConnection connection =
             await SqlServerConnectionFactory.OpenAsync();
@@ -167,7 +182,7 @@ public sealed class CreditRequestRepository
         await using (SqlCommand updateCommand = new(
             """
             UPDATE dbo.CreditRequest
-            SET CurrentDecision = @Approved
+            SET CurrentDecision = @NewDecision
             WHERE Id = @Id
             AND CurrentDecision = @ManualReview;
             """,
@@ -178,21 +193,22 @@ public sealed class CreditRequestRepository
                 "@Id", SqlDbType.UniqueIdentifier).Value = id;
 
             updateCommand.Parameters.Add(
-                "@Approved", SqlDbType.TinyInt).Value =
-                (byte)Decision.Approved;
+                "@NewDecision", SqlDbType.TinyInt).Value =
+                (byte)newDecision;
 
             updateCommand.Parameters.Add(
                 "@ManualReview", SqlDbType.TinyInt).Value =
                 (byte)Decision.ManualReview;
 
-            int changedRows = await updateCommand.ExecuteNonQueryAsync();
+            int changedRows =
+                await updateCommand.ExecuteNonQueryAsync();
 
             if (changedRows != 1)
             {
                 await transaction.RollbackAsync();
 
                 throw new InvalidOperationException(
-                    "The request does not exist or is not awaiting manual review.");
+                    "The request does not exist or is no longer awaiting manual review.");
             }
         }
 
@@ -217,7 +233,7 @@ public sealed class CreditRequestRepository
 
             historyCommand.Parameters.Add(
                 "@NewDecision", SqlDbType.TinyInt).Value =
-                (byte)Decision.Approved;
+                (byte)newDecision;
 
             historyCommand.Parameters.Add(
                 "@ChangedAt", SqlDbType.DateTimeOffset).Value =

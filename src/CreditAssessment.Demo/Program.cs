@@ -44,8 +44,9 @@ Console.WriteLine($"Saved request: {savedId}");
 Console.WriteLine($"Loaded NIF: {saved?.Input.Nif}");
 Console.WriteLine($"Loaded decision: {saved?.CurrentDecision}");
 
-await repository.ApproveAfterManualReviewAsync(
+await repository.ResolveManualReviewAsync(
     savedId,
+    Decision.Approved,
     "demo-analyst",
     "Manual review completed for this demonstration.");
 

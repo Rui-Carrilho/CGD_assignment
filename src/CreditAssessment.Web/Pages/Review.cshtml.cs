@@ -42,7 +42,15 @@ public class ReviewModel : PageModel
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync(Guid id)
+    public Task<IActionResult> OnPostApproveAsync(Guid id) =>
+        ResolveAsync(id, Decision.Approved);
+
+    public Task<IActionResult> OnPostRefuseAsync(Guid id) =>
+        ResolveAsync(id, Decision.Refused);
+
+    private async Task<IActionResult> ResolveAsync(
+        Guid id,
+        Decision newDecision)
     {
         if (!IsLocalDevelopment())
             return NotFound();
@@ -57,27 +65,33 @@ public class ReviewModel : PageModel
             return RedirectToPage("/Result", new { id });
 
         if (string.IsNullOrWhiteSpace(Actor) || Actor.Length > 100)
+        {
             ModelState.AddModelError(
                 nameof(Actor),
                 "Indique o nome do analista (até 100 caracteres).");
+        }
 
         if (string.IsNullOrWhiteSpace(Justification) ||
             Justification.Length > 500)
+        {
             ModelState.AddModelError(
                 nameof(Justification),
-                "Indique a fundamentação (até 500 caracteres).");
+                "Indique a fundamentação da decisão (até 500 caracteres).");
+        }
 
         if (!ModelState.IsValid)
             return Page();
 
         try
         {
-            await repository.ApproveAfterManualReviewAsync(
-                id, Actor!, Justification!);
+            await repository.ResolveManualReviewAsync(
+                id,
+                newDecision,
+                Actor!,
+                Justification!);
         }
         catch (InvalidOperationException)
         {
-            // Another review may have changed the status meanwhile.
             return RedirectToPage("/Result", new { id });
         }
 
