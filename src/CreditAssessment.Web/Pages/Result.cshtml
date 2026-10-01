@@ -1,75 +1,177 @@
 @page "{id:guid}"
 @model CreditAssessment.Web.Pages.ResultModel
+@using CreditAssessment.Core
 @using System.Globalization
 
 @{
+    ViewData["Title"] = "Resultado do pedido";
+
     var assessment = Model.Assessment!;
     var indicators = assessment.Evaluation.Indicators;
-}
 
-<h1>Resultado do pedido</h1>
-
-<p><strong>Pedido:</strong> @assessment.Id</p>
-<p><strong>Decisão atual:</strong> @Model.DecisionLabel</p>
-<p><strong>Versão das regras:</strong> @assessment.Evaluation.RulesVersion</p>
-
-<h2>Motivos</h2>
-
-@if (assessment.Evaluation.Findings.Count == 0)
-{
-    <p>Nenhum motivo de restrição.</p>
-}
-else
-{
-    <ul>
-    @foreach (var finding in assessment.Evaluation.Findings)
+    var tone = assessment.CurrentDecision switch
     {
-        <li>@finding.Message</li>
+        Decision.Approved => "approved",
+        Decision.ManualReview => "manual",
+        Decision.Refused => "refused",
+        _ => "invalid"
+    };
+
+    var explanation = assessment.CurrentDecision switch
+    {
+        Decision.Approved =>
+            "O pedido cumpriu as regras desta pré-análise.",
+        Decision.ManualReview =>
+            "O pedido necessita da apreciação de um analista.",
+        Decision.Refused =>
+            "Uma ou mais condições determinaram a recusa.",
+        _ =>
+            "Os dados fornecidos não permitem analisar o pedido."
+    };
+}
+
+<div class="page-heading">
+    <p class="eyebrow">02 / Resultado</p>
+    <h1>Resultado do pedido</h1>
+    <p class="lead">Veja a decisão, os motivos e os dados usados na avaliação.</p>
+</div>
+
+<section class="decision-banner decision-@tone" aria-labelledby="decision-title">
+    <div>
+        <p class="eyebrow">Estado atual</p>
+        <h2 id="decision-title">@Model.DecisionLabel</h2>
+        <p>@explanation</p>
+    </div>
+    <div class="decision-reference">
+        <span>Referência do pedido</span>
+        <code>@assessment.Id</code>
+    </div>
+</section>
+
+@if (assessment.CurrentDecision != assessment.Evaluation.Decision)
+{
+    <div class="notice">
+        A decisão automática original foi
+        <strong>@DecisionDisplay.Label(assessment.Evaluation.Decision)</strong>.
+        O estado atual mudou posteriormente; consulte o histórico abaixo.
+    </div>
+}
+
+<div class="result-grid">
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Fundamentação</p>
+                <h2>Motivos da decisão automática</h2>
+            </div>
+        </div>
+
+        @if (assessment.Evaluation.Findings.Count == 0)
+        {
+            <p class="empty-note">
+                Nenhuma regra de recusa ou análise manual foi acionada.
+            </p>
+        }
+        else
+        {
+            <ul class="reason-list">
+            @foreach (var finding in assessment.Evaluation.Findings)
+            {
+                <li>
+                    <span class="status-pill status-@finding.Severity.ToString().ToLowerInvariant()">
+                        @DecisionDisplay.Label(finding.Severity)
+                    </span>
+                    <strong>@finding.Message</strong>
+                    <code>@finding.Code</code>
+                </li>
+            }
+            </ul>
+        }
+    </section>
+
+    <section class="panel">
+        <p class="eyebrow">Cálculos</p>
+        <h2>Indicadores</h2>
+
+        @if (indicators is null)
+        {
+            <p class="empty-note">
+                Os indicadores não foram calculados porque o pedido é inválido.
+            </p>
+        }
+        else
+        {
+            <dl class="metric-list">
+                <div>
+                    <dt>Prestação mensal estimada</dt>
+                    <dd>@(indicators.EstimatedInstalment.ToString("F2", CultureInfo.InvariantCulture)) €</dd>
+                </div>
+                <div>
+                    <dt>Taxa de esforço</dt>
+                    <dd>@(indicators.EffortRate.ToString("F2", CultureInfo.InvariantCulture))%</dd>
+                </div>
+                <div>
+                    <dt>Idade no final do contrato</dt>
+                    <dd>@(indicators.AgeAtMaturity.ToString("F2", CultureInfo.InvariantCulture)) anos</dd>
+                </div>
+                <div>
+                    <dt>Limite recomendado do montante</dt>
+                    <dd>@(indicators.RecommendedAmountLimit.ToString("F2", CultureInfo.InvariantCulture)) €</dd>
+                </div>
+            </dl>
+
+            <p class="field-note">
+                Taxa de esforço até 35%: mantém a decisão;
+                acima de 35% até 50%: análise manual;
+                acima de 50%: recusa.
+            </p>
+        }
+    </section>
+</div>
+
+<section class="panel section-space">
+    <p class="eyebrow">Dados recebidos</p>
+    <h2>Resumo do pedido</h2>
+
+    <dl class="detail-grid">
+        <div><dt>NIF</dt><dd>@(assessment.Input.Nif ?? "—")</dd></div>
+        <div><dt>Idade</dt><dd>@(assessment.Input.Age ?? "—")</dd></div>
+        <div><dt>Rendimento mensal</dt><dd>@(assessment.Input.MonthlyIncome ?? "—")</dd></div>
+        <div><dt>Prestações atuais</dt><dd>@(assessment.Input.ExistingInstalments ?? "—")</dd></div>
+        <div><dt>Valor pretendido</dt><dd>@(assessment.Input.RequestedAmount ?? "—")</dd></div>
+        <div><dt>Prazo em meses</dt><dd>@(assessment.Input.TermMonths ?? "—")</dd></div>
+        <div><dt>Situação profissional</dt><dd>@(assessment.Input.Employment ?? "—")</dd></div>
+        <div><dt>Incidentes de crédito</dt><dd>@(assessment.Input.CreditIncidents ?? "—")</dd></div>
+    </dl>
+</section>
+
+<section class="panel section-space">
+    <p class="eyebrow">Auditoria</p>
+    <h2>Histórico de estados</h2>
+
+    <ol class="timeline">
+    @foreach (var entry in Model.History)
+    {
+        <li>
+            <span class="timeline-dot" aria-hidden="true"></span>
+            <div>
+                <strong>@DecisionDisplay.Label(entry.NewDecision)</strong>
+                <p>@entry.Justification</p>
+                <small>
+                    @entry.ChangedAt.ToString("yyyy-MM-dd HH:mm") UTC ·
+                    @entry.Actor
+                </small>
+            </div>
+        </li>
     }
-    </ul>
-}
+    </ol>
 
-<h2>Indicadores</h2>
+    <p class="field-note">
+        Avaliado com a versão @assessment.Evaluation.RulesVersion das regras.
+    </p>
+</section>
 
-@if (indicators is null)
-{
-    <p>Não calculados porque o pedido é inválido.</p>
-}
-else
-{
-    <ul>
-        <li>
-            Prestação estimada:
-            @(indicators.EstimatedInstalment.ToString("F2", CultureInfo.InvariantCulture)) €
-        </li>
-        <li>
-            Taxa de esforço:
-            @(indicators.EffortRate.ToString("F2", CultureInfo.InvariantCulture))%
-        </li>
-        <li>
-            Idade no final do contrato:
-            @(indicators.AgeAtMaturity.ToString("F2", CultureInfo.InvariantCulture))
-        </li>
-        <li>
-            Limite recomendado:
-            @(indicators.RecommendedAmountLimit.ToString("F2", CultureInfo.InvariantCulture)) €
-        </li>
-    </ul>
-}
-
-<h2>Histórico de estados</h2>
-
-<ol>
-@foreach (var entry in Model.History)
-{
-    <li>
-        @entry.ChangedAt.ToString("yyyy-MM-dd HH:mm") UTC —
-        @DecisionDisplay.Label(entry.NewDecision)
-        (@entry.Actor: @entry.Justification)
-    </li>
-}
-</ol>
-
-<p><a asp-page="/History">Ver pedidos recentes</a></p>
-
-<p><a asp-page="/Index">Avaliar outro pedido</a></p>
+<div class="page-actions">
+    <a asp-page="/Index" class="button button-primary">Avaliar outro pedido</a>
+    <a asp-page="/History" class="button button-secondary">Ver pedidos recentes</a>
+</div>

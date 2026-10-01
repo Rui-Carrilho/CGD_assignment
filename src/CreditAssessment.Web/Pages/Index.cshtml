@@ -1,61 +1,199 @@
 ﻿@page
 @model CreditAssessment.Web.Pages.IndexModel
 
-<h1>Novo pedido de crédito</h1>
+@{
+    ViewData["Title"] = "Novo pedido";
+}
 
-<p>Introduza os dados para obter uma pré-análise.</p>
+<div class="page-heading">
+    <p class="eyebrow">01 / Avaliação</p>
+    <h1>Novo pedido de crédito</h1>
+    <p class="lead">
+        Introduza os dados do pedido. A aplicação valida-os, calcula os
+        indicadores e apresenta a decisão com os respetivos motivos.
+    </p>
+</div>
 
-<form method="post" asp-page="/Index">
-    <div>
-        <label asp-for="Nif">NIF</label>
-        <input asp-for="Nif" inputmode="numeric" />
+<section class="sample-section" aria-labelledby="sample-heading">
+    <div class="sample-heading">
+        <div>
+            <p class="eyebrow">Explorar</p>
+            <h2 id="sample-heading">Experimentar um cenário</h2>
+            <p>Carregue um exemplo do enunciado ou preencha o formulário livremente.</p>
+        </div>
     </div>
 
-    <div>
-        <label asp-for="Age">Idade</label>
-        <input asp-for="Age" inputmode="numeric" />
+    <div class="sample-grid">
+        <a class="sample-card" asp-page="/Index" asp-route-scenario="A">
+            <strong>Cenário A</strong>
+            <span>Condições para aprovação</span>
+        </a>
+        <a class="sample-card" asp-page="/Index" asp-route-scenario="B">
+            <strong>Cenário B</strong>
+            <span>Contrato a prazo e análise manual</span>
+        </a>
+        <a class="sample-card" asp-page="/Index" asp-route-scenario="C">
+            <strong>Cenário C</strong>
+            <span>Incidentes de crédito e recusa</span>
+        </a>
+        <a class="sample-card" asp-page="/Index" asp-route-scenario="D">
+            <strong>Cenário D</strong>
+            <span>Taxa de esforço elevada e recusa</span>
+        </a>
     </div>
+</section>
 
-    <div>
-        <label asp-for="MonthlyIncome">Rendimento mensal líquido (€)</label>
-        <input asp-for="MonthlyIncome" inputmode="decimal" />
+@if (Model.LoadedScenario is not null)
+{
+    <div class="notice" role="status">
+        Cenário @Model.LoadedScenario carregado.
+        Pode alterar qualquer valor antes de avaliar.
+        <a asp-page="/Index">Limpar formulário</a>
     </div>
+}
 
-    <div>
-        <label asp-for="ExistingInstalments">Prestações atuais (€)</label>
-        <input asp-for="ExistingInstalments" inputmode="decimal" />
-    </div>
+<div class="content-with-aside">
+    <form method="post" asp-page="/Index" class="form-stack">
+        <section class="panel">
+            <div class="section-heading">
+                <span class="step-number">1</span>
+                <div>
+                    <h2>Cliente</h2>
+                    <p>Identificação e idade no momento do pedido.</p>
+                </div>
+            </div>
 
-    <div>
-        <label asp-for="RequestedAmount">Valor pretendido (€)</label>
-        <input asp-for="RequestedAmount" inputmode="decimal" />
-    </div>
+            <div class="field-grid">
+                <div class="field">
+                    <label asp-for="Nif">NIF</label>
+                    <input asp-for="Nif" class="control"
+                           inputmode="numeric" />
+                    <small>Exatamente nove dígitos.</small>
+                </div>
 
-    <div>
-        <label asp-for="TermMonths">Prazo (meses)</label>
-        <input asp-for="TermMonths" inputmode="numeric" />
-    </div>
+                <div class="field">
+                    <label asp-for="Age">Idade</label>
+                    <input asp-for="Age" class="control"
+                           inputmode="numeric" />
+                    <small>Em anos completos.</small>
+                </div>
+            </div>
+        </section>
 
-    <div>
-        <label asp-for="Employment">Situação profissional</label>
-        <select asp-for="Employment">
-            <option value="">Selecione</option>
-            <option value="Efetivo">Efetivo</option>
-            <option value="ContratoPrazo">Contrato a prazo</option>
-            <option value="Desempregado">Desempregado</option>
-        </select>
-    </div>
+        <section class="panel">
+            <div class="section-heading">
+                <span class="step-number">2</span>
+                <div>
+                    <h2>Condições financeiras</h2>
+                    <p>Valores mensais e características do crédito solicitado.</p>
+                </div>
+            </div>
 
-    <div>
-        <label asp-for="CreditIncidents">Incidentes de crédito</label>
-        <select asp-for="CreditIncidents">
-            <option value="">Selecione</option>
-            <option value="Não">Não</option>
-            <option value="Sim">Sim</option>
-        </select>
-    </div>
+            <div class="field-grid">
+                <div class="field">
+                    <label asp-for="MonthlyIncome">Rendimento mensal líquido</label>
+                    <div class="input-with-unit">
+                        <input asp-for="MonthlyIncome" class="control"
+                               inputmode="decimal"/>
+                        <span>€</span>
+                    </div>
+                    <small>Deve ser superior a zero.</small>
+                </div>
 
-    <p>Para valores decimais, pode usar ponto: <code>2500.50</code>.</p>
+                <div class="field">
+                    <label asp-for="ExistingInstalments">Prestações atuais</label>
+                    <div class="input-with-unit">
+                        <input asp-for="ExistingInstalments" class="control"
+                               inputmode="decimal"/>
+                        <span>€</span>
+                    </div>
+                    <small>Total pago por mês; use 0 se não existirem.</small>
+                </div>
 
-    <button type="submit">Avaliar pedido</button>
-</form>
+                <div class="field">
+                    <label asp-for="RequestedAmount">Valor pretendido</label>
+                    <div class="input-with-unit">
+                        <input asp-for="RequestedAmount" class="control"
+                               inputmode="decimal"/>
+                        <span>€</span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label asp-for="TermMonths">Prazo</label>
+                    <div class="input-with-unit">
+                        <input asp-for="TermMonths" class="control"
+                               inputmode="numeric"/>
+                        <span>meses</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="field-note">
+                Pode escrever valores decimais com ponto, por exemplo
+                <code>2500.50</code>. Os valores serão apresentados com ponto.
+            </p>
+        </section>
+
+        <section class="panel">
+            <div class="section-heading">
+                <span class="step-number">3</span>
+                <div>
+                    <h2>Risco e situação profissional</h2>
+                    <p>Estas respostas podem exigir análise manual ou recusa.</p>
+                </div>
+            </div>
+
+            <div class="field-grid">
+                <div class="field">
+                    <label asp-for="Employment">Situação profissional</label>
+                    <select asp-for="Employment" class="control">
+                        <option value="">Selecione uma opção</option>
+                        <option value="Efetivo">Efetivo</option>
+                        <option value="ContratoPrazo">Contrato a prazo</option>
+                        <option value="Desempregado">Desempregado</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label asp-for="CreditIncidents">Incidentes de crédito</label>
+                    <select asp-for="CreditIncidents" class="control">
+                        <option value="">Selecione uma opção</option>
+                        <option value="Não">Não</option>
+                        <option value="Sim">Sim</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <div class="form-actions">
+            <p>O pedido e o resultado serão guardados para consulta.</p>
+            <button type="submit" class="button button-primary">
+                Avaliar pedido <span aria-hidden="true">→</span>
+            </button>
+        </div>
+    </form>
+
+    <aside class="panel explainer">
+        <p class="eyebrow">Como funciona</p>
+        <h2>Uma decisão explicável</h2>
+        <ol class="explain-list">
+            <li>
+                <strong>Validar</strong>
+                <span>Dados que falham as condições iniciais tornam o pedido inválido.</span>
+            </li>
+            <li>
+                <strong>Calcular</strong>
+                <span>A prestação estimada e a taxa de esforço são calculadas para pedidos válidos.</span>
+            </li>
+            <li>
+                <strong>Decidir</strong>
+                <span>Quando várias regras se aplicam, prevalece a decisão mais restritiva.</span>
+            </li>
+        </ol>
+        <div class="priority-note">
+            <strong>Ordem de prioridade</strong>
+            <span>Inválido → Recusado → Análise manual → Aprovado</span>
+        </div>
+    </aside>
+</div>

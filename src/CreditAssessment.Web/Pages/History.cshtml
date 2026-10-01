@@ -1,39 +1,66 @@
 @page
 @model CreditAssessment.Web.Pages.HistoryModel
 
-<h1>Pedidos recentes</h1>
-
-@if (Model.Requests.Count == 0)
-{
-    <p>Ainda não existem pedidos.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Data (UTC)</th>
-                <th>NIF</th>
-                <th>Estado atual</th>
-                <th>Pedido</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var request in Model.Requests)
-        {
-            <tr>
-                <td>@request.SubmittedAt.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>@(request.Nif ?? "—")</td>
-                <td>@DecisionDisplay.Label(request.CurrentDecision)</td>
-                <td>
-                    <a asp-page="/Result" asp-route-id="@request.Id">
-                        Ver resultado
-                    </a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+@{
+    ViewData["Title"] = "Pedidos recentes";
 }
 
-<p><a asp-page="/Index">Novo pedido</a></p>
+<div class="page-heading">
+    <p class="eyebrow">03 / Consulta</p>
+    <h1>Pedidos recentes</h1>
+    <p class="lead">
+        Os 50 pedidos mais recentes, com o respetivo estado atual.
+        Abra um pedido para consultar motivos, indicadores e histórico.
+    </p>
+</div>
+
+<section class="panel">
+    @if (Model.Requests.Count == 0)
+    {
+        <div class="empty-state">
+            <h2>Ainda não existem pedidos</h2>
+            <p>Comece por submeter um pedido para avaliação.</p>
+            <a asp-page="/Index" class="button button-primary">Novo pedido</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Submetido em</th>
+                        <th scope="col">NIF</th>
+                        <th scope="col">Estado atual</th>
+                        <th scope="col">Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var request in Model.Requests)
+                {
+                    var tone = request.CurrentDecision.ToString().ToLowerInvariant();
+
+                    <tr>
+                        <td>@request.SubmittedAt.ToString("yyyy-MM-dd HH:mm") UTC</td>
+                        <td>@(request.Nif ?? "NIF inválido")</td>
+                        <td>
+                            <span class="status-pill status-@tone">
+                                @DecisionDisplay.Label(request.CurrentDecision)
+                            </span>
+                        </td>
+                        <td>
+                            <a asp-page="/Result" asp-route-id="@request.Id">
+                                Ver pedido <span aria-hidden="true">→</span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>
+
+<div class="page-actions">
+    <a asp-page="/Index" class="button button-primary">Novo pedido</a>
+</div>

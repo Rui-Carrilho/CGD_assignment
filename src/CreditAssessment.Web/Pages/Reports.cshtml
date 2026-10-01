@@ -4,66 +4,126 @@
 @{
     ViewData["Title"] = "Relatórios";
     var report = Model.Snapshot!;
+    var total = report.Approved + report.ManualReview +
+                report.Refused + report.Invalid;
 }
 
-<h1>Relatórios</h1>
+<div class="page-heading">
+    <p class="eyebrow">04 / Reporting</p>
+    <h1>Relatórios</h1>
+    <p class="lead">
+        Uma visão dos estados atuais, motivos de recusa e pedidos repetidos.
+        Os números refletem os dados guardados neste ambiente.
+    </p>
+</div>
 
-<h2>Pedidos por estado atual</h2>
+<section aria-labelledby="status-heading">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">Distribuição</p>
+            <h2 id="status-heading">Pedidos por estado atual</h2>
+        </div>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Estado</th>
-            <th>Pedidos</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr><td>APROVADO</td><td>@report.Approved</td></tr>
-        <tr><td>ANÁLISE MANUAL</td><td>@report.ManualReview</td></tr>
-        <tr><td>RECUSADO</td><td>@report.Refused</td></tr>
-        <tr><td>PEDIDO INVÁLIDO</td><td>@report.Invalid</td></tr>
-    </tbody>
-</table>
+    <div class="stat-grid">
+        <article class="stat-card">
+            <span>Total</span>
+            <strong>@total</strong>
+            <small>Pedidos guardados</small>
+        </article>
+        <article class="stat-card stat-approved">
+            <span>Aprovados</span>
+            <strong>@report.Approved</strong>
+            <small>Estado atual</small>
+        </article>
+        <article class="stat-card stat-manual">
+            <span>Análise manual</span>
+            <strong>@report.ManualReview</strong>
+            <small>Estado atual</small>
+        </article>
+        <article class="stat-card stat-refused">
+            <span>Recusados</span>
+            <strong>@report.Refused</strong>
+            <small>Estado atual</small>
+        </article>
+        <article class="stat-card stat-invalid">
+            <span>Inválidos</span>
+            <strong>@report.Invalid</strong>
+            <small>Estado atual</small>
+        </article>
+    </div>
+</section>
 
-<h2>Motivo de recusa mais frequente</h2>
+<div class="result-grid section-space">
+    <section class="panel">
+        <p class="eyebrow">Recusas</p>
+        <h2>Motivo mais frequente</h2>
+        <p class="section-intro">
+            Conta cada motivo de severidade “Recusado” nos pedidos
+            atualmente recusados. Empates são apresentados em conjunto.
+        </p>
 
-@if (report.TopRefusalReasons.Count == 0)
-{
-    <p>Ainda não existem pedidos recusados com motivos registados.</p>
-}
-else
-{
-    <ul>
-    @foreach (var reason in report.TopRefusalReasons)
-    {
-        <li>@reason.Message (@reason.Code): @reason.Count</li>
-    }
-    </ul>
-}
-
-<h2>Clientes com mais de um pedido no último mês</h2>
-
-@if (report.RepeatCustomers.Count == 0)
-{
-    <p>Nenhum cliente encontrado.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr><th>NIF</th><th>Pedidos</th></tr>
-        </thead>
-        <tbody>
-        @foreach (var customer in report.RepeatCustomers)
+        @if (report.TopRefusalReasons.Count == 0)
         {
-            <tr>
-                <td>@customer.Nif</td>
-                <td>@customer.Count</td>
-            </tr>
+            <p class="empty-note">Ainda não há motivos de recusa para apresentar.</p>
         }
-        </tbody>
-    </table>
-}
+        else
+        {
+            <ul class="reason-list">
+            @foreach (var reason in report.TopRefusalReasons)
+            {
+                <li>
+                    <strong>@reason.Message</strong>
+                    <span>@reason.Count pedido(s)</span>
+                    <code>@reason.Code</code>
+                </li>
+            }
+            </ul>
+        }
+    </section>
 
-<h2>Análise manual que evoluiu para aprovado</h2>
-<p>@report.ManualToApproved pedido(s)</p>
+    <section class="panel">
+        <p class="eyebrow">Evolução</p>
+        <h2>De análise manual para aprovado</h2>
+        <div class="feature-number">@report.ManualToApproved</div>
+        <p class="section-intro">
+            Pedidos inicialmente enviados para análise manual
+            e atualmente aprovados após uma transição registada.
+        </p>
+    </section>
+</div>
+
+<section class="panel section-space">
+    <p class="eyebrow">Recorrência</p>
+    <h2>Clientes com vários pedidos</h2>
+    <p class="section-intro">
+        Mais de um pedido no mês móvel anterior à data atual.
+    </p>
+
+    @if (report.RepeatCustomers.Count == 0)
+    {
+        <p class="empty-note">Nenhum cliente encontrado neste período.</p>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th scope="col">NIF</th>
+                        <th scope="col">Número de pedidos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var customer in report.RepeatCustomers)
+                {
+                    <tr>
+                        <td>@customer.Nif</td>
+                        <td>@customer.Count</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

@@ -59,7 +59,6 @@
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/scopedcss/Pages/Shared/_Layout.cshtml.rz.scp.css
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/scopedcss/bundle/CreditAssessment.Web.styles.css
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/scopedcss/projectbundle/CreditAssessment.Web.bundle.scp.css
-/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/compressed/086v6dvri7-{0}-lugek5hnai-lugek5hnai.gz
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/compressed/bb3pofyock-{0}-61n19gt1b8-61n19gt1b8.gz
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/compressed/x6a0ypszy2-{0}-fr7q2aak1r-fr7q2aak1r.gz
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/compressed/h90lulqb8w-{0}-bqjiyaj88i-bqjiyaj88i.gz
@@ -134,3 +133,4 @@
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/CreditAssessment.Web.pdb
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/CreditAssessment.Web.genruntimeconfig.cache
 /home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/ref/CreditAssessment.Web.dll
+/home/sirlordboss/Documents/CGD_assignment/src/CreditAssessment.Web/obj/Debug/net10.0/compressed/086v6dvri7-{0}-gimr9z413m-gimr9z413m.gz
