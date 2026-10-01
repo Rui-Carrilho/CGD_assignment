@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CreditAssessment.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ac463199bc7ac08462fb5b6ee94677b6be0f5404")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2e0cada5d1382969dcd19e8340dbc95ec5399dd")]
 [assembly: System.Reflection.AssemblyProductAttribute("CreditAssessment.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CreditAssessment.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

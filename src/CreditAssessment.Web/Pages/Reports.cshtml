@@ -1,0 +1,69 @@
+@page
+@model CreditAssessment.Web.Pages.ReportsModel
+
+@{
+    ViewData["Title"] = "Relatórios";
+    var report = Model.Snapshot!;
+}
+
+<h1>Relatórios</h1>
+
+<h2>Pedidos por estado atual</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Estado</th>
+            <th>Pedidos</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>APROVADO</td><td>@report.Approved</td></tr>
+        <tr><td>ANÁLISE MANUAL</td><td>@report.ManualReview</td></tr>
+        <tr><td>RECUSADO</td><td>@report.Refused</td></tr>
+        <tr><td>PEDIDO INVÁLIDO</td><td>@report.Invalid</td></tr>
+    </tbody>
+</table>
+
+<h2>Motivo de recusa mais frequente</h2>
+
+@if (report.TopRefusalReasons.Count == 0)
+{
+    <p>Ainda não existem pedidos recusados com motivos registados.</p>
+}
+else
+{
+    <ul>
+    @foreach (var reason in report.TopRefusalReasons)
+    {
+        <li>@reason.Message (@reason.Code): @reason.Count</li>
+    }
+    </ul>
+}
+
+<h2>Clientes com mais de um pedido no último mês</h2>
+
+@if (report.RepeatCustomers.Count == 0)
+{
+    <p>Nenhum cliente encontrado.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr><th>NIF</th><th>Pedidos</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var customer in report.RepeatCustomers)
+        {
+            <tr>
+                <td>@customer.Nif</td>
+                <td>@customer.Count</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<h2>Análise manual que evoluiu para aprovado</h2>
+<p>@report.ManualToApproved pedido(s)</p>
