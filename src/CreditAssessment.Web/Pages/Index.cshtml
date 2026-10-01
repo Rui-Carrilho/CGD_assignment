@@ -15,39 +15,65 @@
 </div>
 
 <section class="sample-section" aria-labelledby="sample-heading">
-    <div class="sample-heading">
-        <div>
-            <p class="eyebrow">Explorar</p>
-            <h2 id="sample-heading">Experimentar um cenário</h2>
-            <p>Carregue um exemplo do enunciado ou preencha o formulário livremente.</p>
-        </div>
-    </div>
+    <details class="example-picker">
+        <summary>
+            <span>
+                <strong>Experimentar exemplos</strong>
+                <small>4 cenários do enunciado · 6 casos adicionais</small>
+            </span>
+        </summary>
 
-    <div class="sample-grid">
-        <a class="sample-card" asp-page="/Index" asp-route-scenario="A">
-            <strong>Cenário A</strong>
-            <span>Condições para aprovação</span>
-        </a>
-        <a class="sample-card" asp-page="/Index" asp-route-scenario="B">
-            <strong>Cenário B</strong>
-            <span>Contrato a prazo e análise manual</span>
-        </a>
-        <a class="sample-card" asp-page="/Index" asp-route-scenario="C">
-            <strong>Cenário C</strong>
-            <span>Incidentes de crédito e recusa</span>
-        </a>
-        <a class="sample-card" asp-page="/Index" asp-route-scenario="D">
-            <strong>Cenário D</strong>
-            <span>Taxa de esforço elevada e recusa</span>
-        </a>
-    </div>
+        <div class="example-picker-content">
+            <h2>Cenários do enunciado</h2>
+            <div class="example-links">
+                <a asp-page="/Index" asp-route-scenario="A">
+                    <strong>A</strong><span>Aprovação</span>
+                </a>
+                <a asp-page="/Index" asp-route-scenario="B">
+                    <strong>B</strong><span>Contrato a prazo</span>
+                </a>
+                <a asp-page="/Index" asp-route-scenario="C">
+                    <strong>C</strong><span>Incidentes de crédito</span>
+                </a>
+                <a asp-page="/Index" asp-route-scenario="D">
+                    <strong>D</strong><span>Esforço elevado</span>
+                </a>
+            </div>
+
+            <h2>Limites e exceções</h2>
+            <div class="example-links">
+                <a asp-page="/Index" asp-route-scenario="ZERO_INCOME">
+                    <strong>Inválido</strong><span>Rendimento igual a zero</span>
+                </a>
+                <a asp-page="/Index" asp-route-scenario="AGE_LIMIT">
+                    <strong>Idade</strong><span>Ultrapassa 75 anos no final</span>
+                </a>
+                <a asp-page="/Index" asp-route-scenario="EFFORT_35">
+                    <strong>35%</strong><span>Taxa de esforço no limite</span>
+                </a>
+                <a asp-page="/Index" asp-route-scenario="EFFORT_OVER_50">
+                    <strong>&gt;50%</strong><span>Taxa de esforço de recusa</span>
+                </a>
+                <a asp-page="/Index" asp-route-scenario="HIGH_AMOUNT">
+                    <strong>&gt;50 mil €</strong><span>Montante elevado</span>
+                </a>
+                <a asp-page="/Index" asp-route-scenario="MULTIPLE_RULES">
+                    <strong>Prioridade</strong><span>Recusa e análise manual simultâneas</span>
+                </a>
+            </div>
+
+            <p class="field-note">
+                Carregar um exemplo preenche o formulário; só
+                “Avaliar pedido” o guarda na base de dados.
+            </p>
+        </div>
+    </details>
 </section>
 
 @if (Model.LoadedScenario is not null)
 {
     <div class="notice" role="status">
-        Cenário @Model.LoadedScenario carregado.
-        Pode alterar qualquer valor antes de avaliar.
+        Exemplo carregado. Pode alterar qualquer valor antes de avaliar.
         <a asp-page="/Index">Limpar formulário</a>
     </div>
 }

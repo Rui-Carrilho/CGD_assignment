@@ -1,0 +1,107 @@
+@page
+@model CreditAssessment.Web.Pages.ReviewQueueModel
+
+@{
+    ViewData["Title"] = "Fila de análise";
+    var now = DateTimeOffset.UtcNow;
+}
+
+<div class="page-heading">
+    <p class="eyebrow">Área do analista</p>
+    <h1>Fila de análise manual</h1>
+    <p class="lead">
+        Pedidos que aguardam uma decisão humana, apresentados do mais
+        antigo para o mais recente.
+    </p>
+</div>
+
+<div class="queue-summary">
+    <div>
+        <span>Pedidos pendentes</span>
+        <strong>@Model.Requests.Count</strong>
+    </div>
+    <p>
+        Aprovar um pedido retira-o automaticamente desta fila e regista
+        a decisão no histórico.
+    </p>
+</div>
+
+@if (Model.Requests.Count == 0)
+{
+    <section class="panel empty-state">
+        <h2>Não existem pedidos pendentes</h2>
+        <p>Todos os pedidos enviados para análise manual foram tratados.</p>
+        <a asp-page="/History" class="button button-secondary">
+            Consultar pedidos
+        </a>
+    </section>
+}
+else
+{
+    <div class="review-queue">
+    @foreach (var request in Model.Requests)
+    {
+        var waiting = now - request.SubmittedAt;
+
+        var waitingLabel = waiting.TotalDays >= 1
+            ? $"{(int)waiting.TotalDays} dia(s)"
+            : waiting.TotalHours >= 1
+                ? $"{(int)waiting.TotalHours} hora(s)"
+                : $"{Math.Max(0, (int)waiting.TotalMinutes)} minuto(s)";
+
+        <article class="panel queue-item">
+            <div class="queue-item-heading">
+                <div>
+                    <p class="eyebrow">A aguardar há @waitingLabel</p>
+                    <h2>Pedido de @(request.RequestedAmount ?? "—") €</h2>
+                </div>
+
+                <span class="status-pill status-manualreview">
+                    ANÁLISE MANUAL
+                </span>
+            </div>
+
+            <dl class="queue-details">
+                <div>
+                    <dt>NIF</dt>
+                    <dd>@(request.Nif ?? "—")</dd>
+                </div>
+                <div>
+                    <dt>Submetido em</dt>
+                    <dd>
+                        @request.SubmittedAt.ToString("yyyy-MM-dd HH:mm") UTC
+                    </dd>
+                </div>
+                <div>
+                    <dt>Referência</dt>
+                    <dd><code>@request.Id</code></dd>
+                </div>
+            </dl>
+
+            <div class="queue-reasons">
+                <strong>Motivos para análise</strong>
+                <ul>
+                @foreach (var finding in request.Findings)
+                {
+                    <li>@finding.Message</li>
+                }
+                </ul>
+            </div>
+
+            <div class="page-actions">
+                <a asp-page="/Review"
+                   asp-route-id="@request.Id"
+                   class="button button-primary">
+                    Analisar pedido
+                </a>
+
+                <a asp-page="/Result"
+                   asp-route-id="@request.Id"
+                   class="button button-secondary">
+                    Consultar resultado
+                </a>
+            </div>
+        </article>
+    }
+    </div>
+}

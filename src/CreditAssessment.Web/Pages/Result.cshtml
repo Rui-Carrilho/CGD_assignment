@@ -2,12 +2,18 @@
 @model CreditAssessment.Web.Pages.ResultModel
 @using CreditAssessment.Core
 @using System.Globalization
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostEnvironment
 
 @{
     ViewData["Title"] = "Resultado do pedido";
 
     var assessment = Model.Assessment!;
     var indicators = assessment.Evaluation.Indicators;
+
+    var canReview = HostEnvironment.IsDevelopment()
+        && ViewContext.HttpContext.Connection.RemoteIpAddress is { } remote
+        && System.Net.IPAddress.IsLoopback(remote)
+        && assessment.CurrentDecision == Decision.ManualReview;
 
     var tone = assessment.CurrentDecision switch
     {
@@ -172,6 +178,14 @@
 </section>
 
 <div class="page-actions">
+    @if (canReview)
+    {
+        <a asp-page="/Review"
+            asp-route-id="@assessment.Id"
+            class="button button-primary">
+                Rever pedido
+        </a>
+    }
     <a asp-page="/Index" class="button button-primary">Avaliar outro pedido</a>
     <a asp-page="/History" class="button button-secondary">Ver pedidos recentes</a>
 </div>

@@ -18,6 +18,52 @@ public static class Scenarios
                          "36", "Efetivo", "Não")
         };
 
+    public static IReadOnlyDictionary<string, RequestInput> Additional { get; } =
+    new Dictionary<string, RequestInput>
+    {
+        ["ZERO_INCOME"] = All["A"] with
+        {
+            MonthlyIncome = "0"
+        },
+
+        ["AGE_LIMIT"] = All["A"] with
+        {
+            Age = "74",
+            TermMonths = "13",
+            RequestedAmount = "100"
+        },
+
+        ["EFFORT_35"] = All["A"] with
+        {
+            MonthlyIncome = "1000",
+            ExistingInstalments = "0",
+            RequestedAmount = "4200",
+            TermMonths = "12"
+        },
+
+        ["EFFORT_OVER_50"] = All["A"] with
+        {
+            MonthlyIncome = "1000",
+            ExistingInstalments = "0",
+            RequestedAmount = "6000.01",
+            TermMonths = "12"
+        },
+
+        ["HIGH_AMOUNT"] = All["A"] with
+        {
+            MonthlyIncome = "10000",
+            ExistingInstalments = "0",
+            RequestedAmount = "50000.01",
+            TermMonths = "120"
+        },
+
+        ["MULTIPLE_RULES"] = All["A"] with
+        {
+            CreditIncidents = "Sim",
+            RequestedAmount = "60000"
+        }
+    };
+
     private static RequestInput Make(
         string age,
         string income,

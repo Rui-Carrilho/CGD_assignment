@@ -310,6 +310,63 @@ public sealed class CreditRequestRepository
         return requests;
     }
 
+    public async Task<IReadOnlyList<ManualReviewQueueItem>>
+        ListManualReviewQueueAsync(int take = 100)
+    {
+        if (take < 1 || take > 100)
+            throw new ArgumentOutOfRangeException(nameof(take));
+
+        await using SqlConnection connection =
+            await SqlServerConnectionFactory.OpenAsync();
+
+        await using SqlCommand command = new(
+            """
+            SELECT TOP (@Take)
+                Id,
+                Nif,
+                InputJson,
+                EvaluationJson,
+                SubmittedAt
+            FROM dbo.CreditRequest
+            WHERE CurrentDecision = @ManualReview
+            ORDER BY SubmittedAt, Id;
+            """,
+            connection);
+
+        command.Parameters.Add("@Take", SqlDbType.Int).Value = take;
+
+        command.Parameters.Add(
+            "@ManualReview",
+            SqlDbType.TinyInt).Value = (byte)Decision.ManualReview;
+
+        await using SqlDataReader reader =
+            await command.ExecuteReaderAsync();
+
+        var requests = new List<ManualReviewQueueItem>();
+
+        while (await reader.ReadAsync())
+        {
+            RequestInput input =
+                JsonSerializer.Deserialize<RequestInput>(reader.GetString(2))
+                ?? throw new InvalidOperationException(
+                    "Stored request input is empty.");
+
+            Evaluation evaluation =
+                JsonSerializer.Deserialize<Evaluation>(reader.GetString(3))
+                ?? throw new InvalidOperationException(
+                    "Stored evaluation is empty.");
+
+            requests.Add(new ManualReviewQueueItem(
+                reader.GetGuid(0),
+                reader.IsDBNull(1) ? null : reader.GetString(1),
+                input.RequestedAmount,
+                reader.GetDateTimeOffset(4),
+                evaluation.Findings));
+        }
+
+        return requests;
+    }
+
     public async Task<IReadOnlyList<StatusHistoryEntry>> GetHistoryAsync(
         Guid requestId)
     {

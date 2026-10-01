@@ -480,59 +480,203 @@ h2 {
     .detail-grid, .stat-grid { grid-template-columns: 1fr; }
 }
 
-.sample-section {
-    margin-bottom: 24px;
-}
-
-.sample-heading p:last-child {
-    color: var(--muted);
-    margin-bottom: 14px;
-}
-
-.sample-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-}
-
-.sample-card {
-    display: grid;
-    align-content: start;
-    gap: 5px;
-    min-height: 105px;
-    padding: 17px;
+.example-picker {
+    margin-bottom: 22px;
+    background: white;
     border: 1px solid var(--border);
     border-radius: 12px;
-    background: white;
-    color: var(--ink);
-    text-decoration: none;
     box-shadow: var(--shadow);
 }
 
-.sample-card:hover,
-.sample-card:focus-visible {
+.example-picker summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.example-picker summary::-webkit-details-marker {
+    display: none;
+}
+
+.example-picker summary::after {
+    content: "⌄";
+    color: var(--accent-dark);
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.example-picker[open] summary::after {
+    transform: rotate(180deg);
+}
+
+.example-picker summary strong,
+.example-picker summary small {
+    display: block;
+}
+
+.example-picker summary small {
+    color: var(--muted);
+    font-size: .85rem;
+}
+
+.example-picker-content {
+    padding: 0 18px 18px;
+    border-top: 1px solid var(--border);
+}
+
+.example-picker-content h2 {
+    margin: 18px 0 9px;
+    font-size: .95rem;
+}
+
+.example-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.example-links a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.example-links a:hover,
+.example-links a:focus-visible {
     border-color: var(--accent);
     background: #f4fbf9;
-    color: var(--ink);
 }
 
-.sample-card strong {
+.example-links a strong {
+    min-width: 66px;
     color: var(--accent-dark);
+    font-size: .85rem;
 }
 
-.sample-card span {
+.example-links a span {
     color: var(--muted);
-    font-size: .9rem;
+    font-size: .88rem;
 }
 
-@media (max-width: 900px) {
-    .sample-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 680px) {
+    .example-links {
+        grid-template-columns: 1fr;
     }
 }
 
-@media (max-width: 420px) {
-    .sample-grid {
+.review-field {
+    margin-top: 18px;
+}
+
+.review-textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.validation-summary:empty,
+.field-error:empty {
+    display: none;
+}
+
+.validation-summary,
+.field-error {
+    color: #9b2f2f;
+}
+
+.validation-summary ul {
+    padding-left: 20px;
+}
+
+.queue-summary {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 22px;
+    padding: 18px 22px;
+    border-radius: 14px;
+    background: #fff5df;
+    border: 1px solid #e9ce8a;
+}
+
+.queue-summary > div {
+    flex: none;
+    display: grid;
+}
+
+.queue-summary span,
+.queue-summary p {
+    color: var(--muted);
+}
+
+.queue-summary strong {
+    color: #704e06;
+    font-size: 2.2rem;
+    line-height: 1;
+}
+
+.queue-summary p {
+    margin: 0;
+}
+
+.review-queue {
+    display: grid;
+    gap: 18px;
+}
+
+.queue-item-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.queue-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 18px;
+    margin: 20px 0;
+    padding: 16px 0;
+    border-block: 1px solid var(--border);
+}
+
+.queue-details dt {
+    color: var(--muted);
+    font-size: .82rem;
+}
+
+.queue-details dd {
+    margin: 4px 0 0;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.queue-reasons > strong {
+    display: block;
+    margin-bottom: 7px;
+}
+
+.queue-reasons ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--muted);
+}
+
+@media (max-width: 680px) {
+    .queue-summary,
+    .queue-item-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .queue-details {
         grid-template-columns: 1fr;
     }
 }

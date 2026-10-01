@@ -20,11 +20,16 @@ public class IndexModel : PageModel
 
     public void OnGet(string? scenario)
     {
-        if (scenario is null ||
-            !Scenarios.All.TryGetValue(scenario, out RequestInput? sample))
-        {
+        if (scenario is null)
             return;
-        }
+
+        RequestInput? sample;
+
+        if (!Scenarios.All.TryGetValue(scenario, out sample))
+            Scenarios.Additional.TryGetValue(scenario, out sample);
+
+        if (sample is null)
+            return;
 
         LoadedScenario = scenario;
 

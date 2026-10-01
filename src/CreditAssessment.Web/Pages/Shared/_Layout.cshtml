@@ -1,5 +1,11 @@
-﻿@{
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostEnvironment
+
+@{
     var title = ViewData["Title"] as string ?? "Pré-análise de crédito";
+
+    var canUseAnalystArea = HostEnvironment.IsDevelopment()
+        && ViewContext.HttpContext.Connection.RemoteIpAddress is { } remote
+        && System.Net.IPAddress.IsLoopback(remote);
 }
 
 <!DOCTYPE html>
@@ -24,6 +30,10 @@
             <nav aria-label="Navegação principal" class="site-nav">
                 <a asp-page="/Index">Novo pedido</a>
                 <a asp-page="/History">Pedidos</a>
+                @if (canUseAnalystArea)
+                {
+                    <a asp-page="/ReviewQueue">Fila de análise</a>
+                }
                 <a asp-page="/Reports">Relatórios</a>
             </nav>
         </div>
