@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1840" height="1240" viewBox="0 0 1840 1240">
+<rect width="1840" height="1240" fill="#f5f8fc"/>
+<style>text{font-family:DejaVu Sans,sans-serif;fill:#20324a}.title{font-size:30px;font-weight:bold}.subtitle{font-size:18px;fill:#50657f}.entity{font-size:21px;font-weight:bold;fill:white}.field{font-size:17px}.type{font-size:15px;fill:#53647b}.rel{font-size:16px;font-weight:bold;fill:#24578a}.edge{fill:none;stroke:#3e6a98;stroke-width:2.5}</style>
+<text x="50" y="55" class="title">Modelo de dados — Pré-análise de crédito pessoal</text>
+<text x="50" y="87" class="subtitle">Tarefa 1 · Modelo entidade–relação proposto · Cardinalidades mínimas e máximas junto de cada entidade</text>
+<path class="edge" d="M290 250 V365"/>
+<path class="edge" d="M530 510 H685"/>
+<path class="edge" d="M1175 510 H1310"/>
+<path class="edge" d="M530 760 H590 V955 H685"/>
+<text x="304" y="277" class="rel" text-anchor="start">0..1</text>
+<text x="304" y="350" class="rel" text-anchor="start">0..N</text>
+<text x="275" y="312" class="rel" text-anchor="end">apresenta</text>
+<text x="545" y="495" class="rel" text-anchor="start">1</text>
+<text x="670" y="495" class="rel" text-anchor="end">0..1</text>
+<text x="607" y="544" class="rel" text-anchor="middle">recebe</text>
+<text x="1190" y="495" class="rel" text-anchor="start">1</text>
+<text x="1297" y="495" class="rel" text-anchor="end">0..N</text>
+<text x="1243" y="544" class="rel" text-anchor="middle">possui</text>
+<text x="546" y="747" class="rel" text-anchor="start">1</text>
+<text x="670" y="940" class="rel" text-anchor="end">1..N</text>
+<text x="603" y="867" class="rel" text-anchor="start">regista</text>
+<rect x="50" y="130" width="480" height="120" rx="8" fill="white" stroke="#c5d3e1"/>
+<path d="M58 130 H522 Q530 130 530 138 V178 H50 V138 Q50 130 58 130" fill="#183e65"/>
+<text x="68" y="161" class="entity" text-anchor="start">CLIENTE</text>
+<text x="66" y="202" class="field" text-anchor="start">Id</text>
+<text x="515" y="202" class="type" text-anchor="end">uuid · PK</text>
+<rect x="51" y="214" width="478" height="36" fill="#f0f5fa"/>
+<text x="66" y="238" class="field" text-anchor="start">NIF</text>
+<text x="515" y="238" class="type" text-anchor="end">texto · único</text>
+<rect x="50" y="365" width="480" height="480" rx="8" fill="white" stroke="#c5d3e1"/>
+<path d="M58 365 H522 Q530 365 530 373 V413 H50 V373 Q50 365 58 365" fill="#183e65"/>
+<text x="68" y="396" class="entity" text-anchor="start">PEDIDO</text>
+<text x="66" y="437" class="field" text-anchor="start">Id</text>
+<text x="515" y="437" class="type" text-anchor="end">uuid · PK</text>
+<rect x="51" y="449" width="478" height="36" fill="#f0f5fa"/>
+<text x="66" y="473" class="field" text-anchor="start">ClienteId</text>
+<text x="515" y="473" class="type" text-anchor="end">uuid · FK · opcional</text>
+<text x="66" y="509" class="field" text-anchor="start">DataSubmissao</text>
+<text x="515" y="509" class="type" text-anchor="end">data/hora</text>
+<rect x="51" y="521" width="478" height="36" fill="#f0f5fa"/>
+<text x="66" y="545" class="field" text-anchor="start">NIFSubmetido</text>
+<text x="515" y="545" class="type" text-anchor="end">texto</text>
+<text x="66" y="581" class="field" text-anchor="start">Idade</text>
+<text x="515" y="581" class="type" text-anchor="end">inteiro</text>
+<rect x="51" y="593" width="478" height="36" fill="#f0f5fa"/>
+<text x="66" y="617" class="field" text-anchor="start">RendimentoMensalLiquido</text>
+<text x="515" y="617" class="type" text-anchor="end">decimal</text>
+<text x="66" y="653" class="field" text-anchor="start">PrestacoesAtuais</text>
+<text x="515" y="653" class="type" text-anchor="end">decimal</text>
+<rect x="51" y="665" width="478" height="36" fill="#f0f5fa"/>
+<text x="66" y="689" class="field" text-anchor="start">ValorPretendido</text>
+<text x="515" y="689" class="type" text-anchor="end">decimal</text>
+<text x="66" y="725" class="field" text-anchor="start">PrazoMeses</text>
+<text x="515" y="725" class="type" text-anchor="end">inteiro</text>
+<rect x="51" y="737" width="478" height="36" fill="#f0f5fa"/>
+<text x="66" y="761" class="field" text-anchor="start">SituacaoProfissional</text>
+<text x="515" y="761" class="type" text-anchor="end">enum</text>
+<text x="66" y="797" class="field" text-anchor="start">IncidentesCredito</text>
+<text x="515" y="797" class="type" text-anchor="end">booleano</text>
+<rect x="51" y="809" width="478" height="36" fill="#f0f5fa"/>
+<text x="66" y="833" class="field" text-anchor="start">EstadoAtual</text>
+<text x="515" y="833" class="type" text-anchor="end">enum</text>
+<rect x="685" y="365" width="490" height="336" rx="8" fill="white" stroke="#c5d3e1"/>
+<path d="M693 365 H1167 Q1175 365 1175 373 V413 H685 V373 Q685 365 693 365" fill="#183e65"/>
+<text x="703" y="396" class="entity" text-anchor="start">AVALIACAO</text>
+<text x="701" y="437" class="field" text-anchor="start">Id</text>
+<text x="1160" y="437" class="type" text-anchor="end">uuid · PK</text>
+<rect x="686" y="449" width="488" height="36" fill="#f0f5fa"/>
+<text x="701" y="473" class="field" text-anchor="start">PedidoId</text>
+<text x="1160" y="473" class="type" text-anchor="end">uuid · FK · único</text>
+<text x="701" y="509" class="field" text-anchor="start">DataAvaliacao</text>
+<text x="1160" y="509" class="type" text-anchor="end">data/hora</text>
+<rect x="686" y="521" width="488" height="36" fill="#f0f5fa"/>
+<text x="701" y="545" class="field" text-anchor="start">DecisaoAutomatica</text>
+<text x="1160" y="545" class="type" text-anchor="end">enum</text>
+<text x="701" y="581" class="field" text-anchor="start">PrestacaoEstimada</text>
+<text x="1160" y="581" class="type" text-anchor="end">decimal · opcional</text>
+<rect x="686" y="593" width="488" height="36" fill="#f0f5fa"/>
+<text x="701" y="617" class="field" text-anchor="start">TaxaEsforco</text>
+<text x="1160" y="617" class="type" text-anchor="end">decimal · opcional</text>
+<text x="701" y="653" class="field" text-anchor="start">IdadeFinalMeses</text>
+<text x="1160" y="653" class="type" text-anchor="end">inteiro · opcional</text>
+<rect x="686" y="665" width="488" height="36" fill="#f0f5fa"/>
+<text x="701" y="689" class="field" text-anchor="start">VersaoRegras</text>
+<text x="1160" y="689" class="type" text-anchor="end">texto</text>
+<rect x="1310" y="365" width="480" height="264" rx="8" fill="white" stroke="#c5d3e1"/>
+<path d="M1318 365 H1782 Q1790 365 1790 373 V413 H1310 V373 Q1310 365 1318 365" fill="#183e65"/>
+<text x="1328" y="396" class="entity" text-anchor="start">MOTIVO_AVALIACAO</text>
+<text x="1326" y="437" class="field" text-anchor="start">Id</text>
+<text x="1775" y="437" class="type" text-anchor="end">uuid · PK</text>
+<rect x="1311" y="449" width="478" height="36" fill="#f0f5fa"/>
+<text x="1326" y="473" class="field" text-anchor="start">AvaliacaoId</text>
+<text x="1775" y="473" class="type" text-anchor="end">uuid · FK</text>
+<text x="1326" y="509" class="field" text-anchor="start">CodigoRegra</text>
+<text x="1775" y="509" class="type" text-anchor="end">texto</text>
+<rect x="1311" y="521" width="478" height="36" fill="#f0f5fa"/>
+<text x="1326" y="545" class="field" text-anchor="start">CodigoMotivo</text>
+<text x="1775" y="545" class="type" text-anchor="end">texto</text>
+<text x="1326" y="581" class="field" text-anchor="start">NivelDecisao</text>
+<text x="1775" y="581" class="type" text-anchor="end">enum</text>
+<rect x="1311" y="593" width="478" height="36" fill="#f0f5fa"/>
+<text x="1326" y="617" class="field" text-anchor="start">Descricao</text>
+<text x="1775" y="617" class="type" text-anchor="end">texto</text>
+<rect x="685" y="840" width="580" height="300" rx="8" fill="white" stroke="#c5d3e1"/>
+<path d="M693 840 H1257 Q1265 840 1265 848 V888 H685 V848 Q685 840 693 840" fill="#183e65"/>
+<text x="703" y="871" class="entity" text-anchor="start">HISTORICO_ESTADO</text>
+<text x="701" y="912" class="field" text-anchor="start">Id</text>
+<text x="1250" y="912" class="type" text-anchor="end">uuid · PK</text>
+<rect x="686" y="924" width="578" height="36" fill="#f0f5fa"/>
+<text x="701" y="948" class="field" text-anchor="start">PedidoId</text>
+<text x="1250" y="948" class="type" text-anchor="end">uuid · FK</text>
+<text x="701" y="984" class="field" text-anchor="start">EstadoAnterior</text>
+<text x="1250" y="984" class="type" text-anchor="end">enum · opcional</text>
+<rect x="686" y="996" width="578" height="36" fill="#f0f5fa"/>
+<text x="701" y="1020" class="field" text-anchor="start">EstadoNovo</text>
+<text x="1250" y="1020" class="type" text-anchor="end">enum</text>
+<text x="701" y="1056" class="field" text-anchor="start">DataAlteracao</text>
+<text x="1250" y="1056" class="type" text-anchor="end">data/hora</text>
+<rect x="686" y="1068" width="578" height="36" fill="#f0f5fa"/>
+<text x="701" y="1092" class="field" text-anchor="start">Autor</text>
+<text x="1250" y="1092" class="type" text-anchor="end">texto</text>
+<text x="701" y="1128" class="field" text-anchor="start">Justificacao</text>
+<text x="1250" y="1128" class="type" text-anchor="end">texto</text>
+<text x="50" y="1160" class="subtitle" text-anchor="start">PK = chave primária · FK = chave estrangeira · 0..1 = opcional · 0..N = zero ou vários · 1..N = um ou vários</text>
+<text x="50" y="1194" class="subtitle" text-anchor="start">Uma avaliação por pedido neste exercício. Indicadores nulos em pedidos inválidos. A decisão automática é preservada após análise manual.</text>
+</svg>
