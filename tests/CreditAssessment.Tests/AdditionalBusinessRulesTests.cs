@@ -116,4 +116,26 @@ public sealed class AdditionalBusinessRulesTests
         Assert.NotEqual(Decision.Invalid, result.Decision);
         Assert.NotNull(result.Indicators);
     }
+
+    [Theory]
+    [InlineData("ZERO_INCOME", Decision.Invalid)]
+    [InlineData("AGE_LIMIT", Decision.ManualReview)]
+    [InlineData("EFFORT_35", Decision.Approved)]
+    [InlineData("EFFORT_OVER_50", Decision.Refused)]
+    [InlineData("HIGH_AMOUNT", Decision.ManualReview)]
+    [InlineData("MULTIPLE_RULES", Decision.Refused)]
+    [InlineData("UNEMPLOYED", Decision.Refused)]
+    [InlineData("INCOMPLETE", Decision.Invalid)]
+    [InlineData("AGE_EXACT_75", Decision.Approved)]
+    [InlineData("EFFORT_50", Decision.ManualReview)]
+    [InlineData("AMOUNT_LIMIT", Decision.ManualReview)]
+    public void Additional_examples_produce_expected_decisions(
+        string scenario,
+        Decision expectedDecision)
+    {
+        Evaluation result =
+            evaluator.Evaluate(Scenarios.Additional[scenario]);
+
+        Assert.Equal(expectedDecision, result.Decision);
+    }
 }

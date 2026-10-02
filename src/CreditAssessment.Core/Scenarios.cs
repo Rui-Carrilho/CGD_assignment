@@ -61,6 +61,45 @@ public static class Scenarios
         {
             CreditIncidents = "Sim",
             RequestedAmount = "60000"
+        },
+
+        ["UNEMPLOYED"] = All["A"] with
+        {
+            Employment = "Desempregado"
+        },
+
+        ["INCOMPLETE"] = All["A"] with
+        {
+            Nif = "",
+            Age = "",
+            MonthlyIncome = "",
+            RequestedAmount = "",
+            TermMonths = "",
+            Employment = "",
+            CreditIncidents = ""
+        },
+
+        ["AGE_EXACT_75"] = All["A"] with
+        {
+            Age = "74",
+            TermMonths = "12",
+            RequestedAmount = "100"
+        },
+
+        ["EFFORT_50"] = All["A"] with
+        {
+            MonthlyIncome = "1000",
+            ExistingInstalments = "0",
+            RequestedAmount = "6000",
+            TermMonths = "12"
+        },
+
+        ["AMOUNT_LIMIT"] = All["A"] with
+        {
+            MonthlyIncome = "1000",
+            ExistingInstalments = "0",
+            RequestedAmount = "20000.01",
+            TermMonths = "120"
         }
     };
 

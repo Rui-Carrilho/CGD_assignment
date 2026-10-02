@@ -4,7 +4,13 @@
 
 A solução desenvolvida é um protótipo funcional de pré-análise de crédito. Recebe os dados do pedido, valida-os, calcula os indicadores, aplica regras de negócio versionadas, guarda o resultado em SQL Server e permite o tratamento de pedidos enviados para análise manual.
 
-Para evoluir para produção, seria necessário reforçar a segurança, a disponibilidade, a capacidade de auditoria e a operação da aplicação. As melhorias seguintes seriam priorizadas de acordo com o risco e o volume esperado.
+Para evoluir para produção, seria necessário reforçar:
+- segurança;
+- disponibilidade;
+- capacidade de auditoria;
+- operação da aplicação. 
+
+As melhorias seguintes seriam priorizadas de acordo com o risco e o volume esperado.
 
 ## 1. Melhorias técnicas
 
@@ -12,16 +18,16 @@ Para evoluir para produção, seria necessário reforçar a segurança, a dispon
 
 A área de análise manual teria autenticação integrada com o diretório da organização. Os utilizadores teriam perfis e permissões distintos, por exemplo:
 
-- requerente, com acesso apenas à submissão e consulta dos seus pedidos;
-- analista de crédito, com acesso à fila de análise e capacidade para aprovar ou recusar;
-- supervisor, com permissões de consulta, redistribuição e eventual reabertura;
-- auditor, com acesso de leitura ao histórico e aos relatórios.
+- requerente - acesso apenas à submissão e consulta dos seus pedidos;
+- analista de crédito - acesso à fila de análise e capacidade para aprovar ou recusar;
+- supervisor - permissões de consulta, redistribuição e eventual reabertura;
+- auditor - acesso de leitura ao histórico e aos relatórios.
 
 O nome do analista deixaria de ser introduzido manualmente. A identidade usada no histórico seria obtida da sessão autenticada, evitando a possibilidade de alguém registar uma decisão em nome de outra pessoa.
 
 ### Gestão de segredos e acesso à base de dados
 
-A palavra-passe guardada num ficheiro `.env` é adequada apenas ao desenvolvimento local. Em produção, as credenciais seriam obtidas de um gestor de segredos aprovado pela organização. A aplicação utilizaria uma conta de serviço com os privilégios mínimos necessários, sem recorrer ao utilizador administrador `sa`.
+A palavra-passe guardada num ficheiro `.env` é adequada apenas a desenvolvimento local. Em produção, as credenciais seriam obtidas de um gestor de segredos aprovado pela organização. A aplicação utilizaria uma conta de serviço com os privilégios mínimos necessários, sem recorrer ao utilizador administrador `sa`.
 
 As ligações ao SQL Server seriam cifradas e os ambientes de desenvolvimento, testes, qualidade e produção teriam bases de dados e credenciais separadas.
 
@@ -171,7 +177,4 @@ O modelo analítico deveria permitir medir, entre outros:
 
 Relatórios agregados não deveriam expor NIF ou outros dados pessoais sem necessidade funcional. As definições de cada indicador, período e fuso horário seriam documentadas para que os resultados fossem reproduzíveis.
 
-## Conclusão
-
-A evolução para produção não exigiria alterar apenas a interface. Exigiria garantir identidade, autorização, consistência, rastreabilidade, privacidade e capacidade de recuperação. A separação atual entre regras de negócio, persistência e interface fornece uma base adequada, mas a entrada em produção dependeria da implementação e validação dos controlos descritos.
 

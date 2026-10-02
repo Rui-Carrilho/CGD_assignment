@@ -18,53 +18,102 @@
     <details class="example-picker">
         <summary>
             <span>
-                <strong>Experimentar exemplos</strong>
-                <small>4 cenários do enunciado · 6 casos adicionais</small>
+                <strong>Preencher com um caso de exemplo</strong>
+                <small>15 casos de decisão, validação e limites</small>
             </span>
         </summary>
 
         <div class="example-picker-content">
-            <h2>Cenários do enunciado</h2>
+            <h2>Casos de decisão</h2>
+
             <div class="example-links">
                 <a asp-page="/Index" asp-route-scenario="A">
-                    <strong>A</strong><span>Aprovação</span>
+                    <strong>Aprovação</strong>
+                    <span>Pedido sem condições restritivas</span>
                 </a>
+
                 <a asp-page="/Index" asp-route-scenario="B">
-                    <strong>B</strong><span>Contrato a prazo</span>
+                    <strong>Contrato</strong>
+                    <span>Contrato a prazo e esforço intermédio</span>
                 </a>
+
                 <a asp-page="/Index" asp-route-scenario="C">
-                    <strong>C</strong><span>Incidentes de crédito</span>
+                    <strong>Incidentes</strong>
+                    <span>Existência de incidentes de crédito</span>
                 </a>
+
                 <a asp-page="/Index" asp-route-scenario="D">
-                    <strong>D</strong><span>Esforço elevado</span>
+                    <strong>Esforço</strong>
+                    <span>Taxa de esforço elevada</span>
                 </a>
             </div>
 
-            <h2>Limites e exceções</h2>
+            <h2>Validação e perfil do cliente</h2>
+
             <div class="example-links">
+                <a asp-page="/Index" asp-route-scenario="INCOMPLETE">
+                    <strong>Incompleto</strong>
+                    <span>Vários campos obrigatórios vazios</span>
+                </a>
+
                 <a asp-page="/Index" asp-route-scenario="ZERO_INCOME">
-                    <strong>Inválido</strong><span>Rendimento igual a zero</span>
+                    <strong>Sem rendimento</strong>
+                    <span>Rendimento mensal igual a zero</span>
                 </a>
+
+                <a asp-page="/Index" asp-route-scenario="UNEMPLOYED">
+                    <strong>Desemprego</strong>
+                    <span>Cliente desempregado com rendimento válido</span>
+                </a>
+            </div>
+
+            <h2>Fronteiras e prioridade das regras</h2>
+
+            <div class="example-links">
+                <a asp-page="/Index" asp-route-scenario="AGE_EXACT_75">
+                    <strong>75 anos</strong>
+                    <span>Idade final exatamente no limite</span>
+                </a>
+
                 <a asp-page="/Index" asp-route-scenario="AGE_LIMIT">
-                    <strong>Idade</strong><span>Ultrapassa 75 anos no final</span>
+                    <strong>&gt;75 anos</strong>
+                    <span>Idade final acima do limite</span>
                 </a>
+
                 <a asp-page="/Index" asp-route-scenario="EFFORT_35">
-                    <strong>35%</strong><span>Taxa de esforço no limite</span>
+                    <strong>35%</strong>
+                    <span>Taxa de esforço exatamente no limite</span>
                 </a>
+
+                <a asp-page="/Index" asp-route-scenario="EFFORT_50">
+                    <strong>50%</strong>
+                    <span>Taxa de esforço ainda sem recusa</span>
+                </a>
+
                 <a asp-page="/Index" asp-route-scenario="EFFORT_OVER_50">
-                    <strong>&gt;50%</strong><span>Taxa de esforço de recusa</span>
+                    <strong>&gt;50%</strong>
+                    <span>Taxa de esforço que determina recusa</span>
                 </a>
+
+                <a asp-page="/Index" asp-route-scenario="AMOUNT_LIMIT">
+                    <strong>Limite 20×</strong>
+                    <span>Montante acima do limite recomendado</span>
+                </a>
+
                 <a asp-page="/Index" asp-route-scenario="HIGH_AMOUNT">
-                    <strong>&gt;50 mil €</strong><span>Montante elevado</span>
+                    <strong>&gt;50 mil €</strong>
+                    <span>Montante elevado</span>
                 </a>
+
                 <a asp-page="/Index" asp-route-scenario="MULTIPLE_RULES">
-                    <strong>Prioridade</strong><span>Recusa e análise manual simultâneas</span>
+                    <strong>Prioridade</strong>
+                    <span>Recusa e análise manual em simultâneo</span>
                 </a>
             </div>
 
             <p class="field-note">
-                Carregar um exemplo preenche o formulário; só
-                “Avaliar pedido” o guarda na base de dados.
+                Selecionar um caso apenas preenche o formulário.
+                O pedido só é guardado depois de escolher “Avaliar pedido”.
             </p>
         </div>
     </details>

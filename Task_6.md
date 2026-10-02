@@ -61,7 +61,7 @@ Procuraria determinar se a tentativa chegou ao servidor, se iniciou uma transaç
 
 ### Reprodução controlada
 
-Tentaria reproduzir o problema num ambiente seguro com dados de teste e condições semelhantes. Verificaria o mesmo navegador e, depois, um navegador suportado alternativo. Não faria experiências diretamente sobre o pedido real do cliente sem avaliar o risco de duplicação ou alteração de estado.
+Tentaria reproduzir o problema num ambiente seguro com dados de teste e condições semelhantes. Verificaria o mesmo browser e, depois, um browser suportado alternativo. Não faria experiências diretamente sobre o pedido real do cliente sem avaliar o risco de duplicação ou alteração de estado.
 
 ### Avaliação do impacto
 
@@ -179,8 +179,3 @@ O incidente só seria considerado resolvido depois de:
 - os testes relevantes passarem;
 - a monitorização não indicar recorrência;
 - a solução e as ações preventivas ficarem documentadas.
-
-## Conclusão
-
-O reporte inicial é insuficiente para diagnosticar, mas é suficiente para iniciar uma triagem estruturada. O objetivo não é apenas eliminar a mensagem de erro: é determinar o impacto, preservar a integridade dos pedidos, comunicar com o utilizador e evitar que a mesma falha volte a ocorrer.
-
